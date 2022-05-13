@@ -6,7 +6,7 @@ module.exports = {
 
         if (interaction.isCommand() || interaction.isContextMenu()) {
             const cmd = client.commands.get(interaction.commandName);
-            if (cmd && ((cmd.type.includes(cmd.CommandType.SLASH) || cmd.type.includes(cmd.CommandType.SLASH_APPLICATION)) && interaction.isCommand() || cmd.type.includes(cmd.CommandType.CTX_USER) && interaction.isContextMenu() || cmd.type.includes(cmd.CommandType.CTX_MESSAGE) && interaction.isContextMenu())) {
+            if (cmd && ((cmd.type.includes(Config.CommandType.SLASH) || cmd.type.includes(Config.CommandType.SLASH_APPLICATION)) && interaction.isCommand() || cmd.type.includes(Config.CommandType.CTX_USER) && interaction.isContextMenu() || cmd.type.includes(Config.CommandType.CTX_MESSAGE) && interaction.isContextMenu())) {
                 
                 let perms_error = [];
                 if (interaction.inGuild()) {
@@ -18,6 +18,10 @@ module.exports = {
                             perms_error_author.push(perm);
                         }
                     });
+
+                    const setted_roles = client.db.get(`guilds.g${interaction.guild.id}.admins`) ?? [];
+                    if (cmd.category.includes(Config.CommandCategory.ADMIN) && perms_error_author.length != 0 && interaction.member.roles.cache.some(role => setted_roles.includes(role.id))) perms_error_author = [];
+
                     if (perms_error_author.length != 0) 
                         perms_error.push(`У тебя нет доступа к использованию команды \`${cmd.name}\`.\n||Требуемые права: ${perms_error_author.join(',')}||`);
                     
@@ -49,7 +53,7 @@ module.exports = {
                     interaction.reply({
                         embeds: [
                             new MessageEmbed()
-                                .setTitle(`Ошибка выполнения команды ${command}`)
+                                .setDescription(`Ошибка выполнения команды ${command}`)
                                 .setColor(Config.embed_color)
                         ],
                         ephemeral: true

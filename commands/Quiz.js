@@ -6,7 +6,8 @@ class Quiz extends BaseCommand {
     
     name = "квест";
     usage = "Сыграть в сюжетный квест";
-    type = [this.CommandType.SLASH, this.CommandType.CHAT];
+    type = [Config.CommandType.SLASH, Config.CommandType.CHAT];
+	category = [Config.CommandCategory.GAME];
     bot_permissions = [
         'SEND_MESSAGES'
     ];

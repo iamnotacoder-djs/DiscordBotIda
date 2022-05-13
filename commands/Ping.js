@@ -5,7 +5,8 @@ class Ping extends BaseCommand {
     
     name = "пинг";
     usage = "Показывает задержку бота";
-    type = [this.CommandType.CHAT, this.CommandType.SLASH];
+    type = [Config.CommandType.CHAT, Config.CommandType.SLASH];
+	category = [Config.CommandCategory.BOT];
     bot_permissions = [
         'SEND_MESSAGES'
     ];

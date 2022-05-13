@@ -4,9 +4,10 @@ const   { Client, Collection, Intents } = require("discord.js"),
         }),
         discordModals = require('discord-modals'),
         Timeout = require("./structures/Timeout"),
-        Logger = require("./structures/Logger");
+        Logger = require("./structures/Logger"),
+        ConfigUtil = require("./structures/ConfigUtil");
 
-global.Config = require("./config.json");
+global.Config = new ConfigUtil();
 global.Log = new Logger();
 
 client.login(Config.token)
@@ -15,7 +16,8 @@ client.login(Config.token)
         Log.send(`[INDEX] Инициализация бота`);
         client.db = require('quick.db');
         client.commands = new Collection();
-        client.timeout1h = new Timeout();
+        client.timeout5m = new Timeout(1000 * 60 * 5);
+        client.timeout5m.start();
         discordModals(client)
         
         require(`./handlers/events.js`).init(client);

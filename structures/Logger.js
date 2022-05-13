@@ -12,7 +12,7 @@ class Logger {
         return new Promise((resolve, reject) => {
             this.client = client;
             try {
-                this.client.channels.fetch("959096618395787344")
+                this.client?.channels.fetch("959096618395787344")
                     .then((channel) => {
                         this.channel = channel;
                         resolve();

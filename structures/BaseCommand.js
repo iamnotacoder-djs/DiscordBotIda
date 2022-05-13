@@ -1,13 +1,12 @@
 'use strict';
 
 class BaseCommand {
-
-    CommandType = { UNSET: 'unset', CHAT: 'chat', SLASH: 'slash', SLASH_APPLICATION: 'slash_application', CTX_USER: 'context_user', CTX_MESSAGE: 'context_message' };
-
+ 
     // Основные
     name = "commandname";
     usage = "Описание функционала команды";
     type = [];
+    category = [];
     bot_permissions = [
 
     ];
@@ -41,7 +40,8 @@ class BaseCommand {
     }
 
     exec(client, command) {
-        Log.send(`[COMMANDS/${this.name.toUpperCase()}] Usage <@${command.user.id}> <#${command?.channel?.id}>`);
+        command.user = command.author ?? command.user;
+        Log.send(`[COMMANDS/${this.name.toUpperCase()}] Usage <@${command?.user?.id}> <#${command?.channel?.id}>`);
         this.execute(client, command);
     }
 

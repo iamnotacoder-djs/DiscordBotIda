@@ -6,7 +6,8 @@ class Poll extends BaseCommand {
     
     name = "голосование";
     usage = "Создать голосование";
-    type = [this.CommandType.SLASH];
+    type = [Config.CommandType.SLASH];
+	category = [Config.CommandCategory.FUN];
     bot_permissions = [
         'SEND_MESSAGES', 'MANAGE_CHANNELS', 'MANAGE_THREADS'
     ];

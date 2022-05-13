@@ -4,7 +4,7 @@ class Timeout {
 
     execs = new Map();
 
-    constructor(timer = 1000 * 60 * 60) { 
+    constructor(timer = 1000 * 60 * 60) {
         this.timer = timer;
         this.timeout = 0;
     }
@@ -39,15 +39,26 @@ class Timeout {
         setTimeout(() => {
 			if (this.execs != undefined) this.execs.forEach((value, key) => { 
 				try {
-					Log.send(`[TIMEOUT] Выполняется ${key}`);
+					Log.send(`[STRUCTURES/TIMEOUT] Выполняется ${key}`);
 					value();
-				} catch (err) {
-					Log.send(`[TIMEOUT] Ошибка выполнения ${key}: ${err}`);
+				} catch (e) {
+					Log.error(`[STRUCTURES/TIMEOUT] Ошибка выполнения ${key}: ${e}`);
 				}
 			});
             this.#execute();
 		}, this.timer);
     }
+
+    /*executeAsAdmin() {
+        this.execs.forEach((value, key) => { 
+            try {
+                Log.send(`[STRUCTURES/TIMEOUT] Выполняется ${key}`);
+                value();
+            } catch (e) {
+                Log.error(`[STRUCTURES/TIMEOUT] Ошибка выполнения ${key}: ${e}`);
+            }
+        });
+    }*/
 
 }
 

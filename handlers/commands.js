@@ -10,7 +10,7 @@ module.exports.init = async (client) => {
 		if (cmd instanceof BaseCommand) {
 			client.commands.set(cmd.name, cmd);
 			cmd.setupTimeouts(client);
-			if (cmd.type.includes(cmd.CommandType.SLASH_APPLICATION)) 
+			if (cmd.type.includes(Config.CommandType.SLASH_APPLICATION)) 
 				slashes.push(cmd.slash);
 		}
     });

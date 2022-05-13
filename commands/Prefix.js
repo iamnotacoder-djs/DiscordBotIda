@@ -5,7 +5,8 @@ class Prefix extends BaseCommand {
     
     name = "префикс";
     usage = "Показать префикс бота";
-    type = [this.CommandType.CHAT, this.CommandType.SLASH];
+    type = [Config.CommandType.CHAT, Config.CommandType.SLASH];
+	category = [Config.CommandCategory.SERVER];
     bot_permissions = [
         'SEND_MESSAGES'
     ];

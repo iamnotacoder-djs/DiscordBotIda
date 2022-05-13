@@ -12,7 +12,7 @@ module.exports = {
         const command = args.shift();
         const cmd = client.commands.get(command);
 
-        if (cmd && cmd.type.includes(cmd.CommandType.CHAT)) {
+        if (cmd && cmd.type.includes(Config.CommandType.CHAT)) {
             let perms_error = [];
             if (message.inGuild()) {
                 
@@ -23,6 +23,10 @@ module.exports = {
                         perms_error_author.push(perm);
                     }
                 });
+                    
+                const setted_roles = client.db.get(`guilds.g${message.guild.id}.admins`) ?? [];
+                if (cmd.category.includes(Config.CommandCategory.ADMIN) && perms_error_author.length != 0 && message.member.roles.cache.some(role => setted_roles.includes(role.id))) perms_error_author = [];
+
                 if (perms_error_author.length != 0) 
                     perms_error.push(`У тебя нет доступа к использованию команды \`${cmd.name}\`.\n||Требуемые права: ${perms_error_author.join(',')}||`);
                 
@@ -55,7 +59,7 @@ module.exports = {
                 message.reply({
                     embeds: [
                         new MessageEmbed()
-                            .setTitle(`Ошибка выполнения команды ${command}`)
+                            .setDescription(`Ошибка выполнения команды ${command}`)
                             .setColor(Config.embed_color)
                     ],
                     ephemeral: true

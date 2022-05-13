@@ -6,7 +6,8 @@ class ITshnik extends BaseCommand {
 
     name = "ida";
     usage = "Меню бота";
-    type = [this.CommandType.CHAT, this.CommandType.SLASH_APPLICATION];
+    type = [Config.CommandType.CHAT, Config.CommandType.SLASH_APPLICATION];
+	category = [Config.CommandCategory.UNSET];
     bot_permissions = [
         'SEND_MESSAGES'
     ];
@@ -17,7 +18,7 @@ class ITshnik extends BaseCommand {
         options: this.options, 
         defaultPermission: true 
     };
-    componentsNames = [`itshnik_si`, `itshnik_si_chooser`];
+    componentsNames = [`itshnik_sm`, `itshnik_sm_slash`, `itshnik_sm_admin_roles`];
 
     constructor() {
         super();
@@ -35,12 +36,25 @@ class ITshnik extends BaseCommand {
 				content: `Админ-ПУ`,
 				components: [
 					new MessageActionRow()
-						.addComponents(
-							new MessageButton()
-								.setLabel("Установщик команд")
-								.setStyle("PRIMARY")
-								.setCustomId("itshnik_si")
-						)
+						.addComponents([
+							new MessageSelectMenu()
+								.setCustomId('itshnik_sm')
+								.setPlaceholder('Админ-меню')
+								.setMinValues(0)
+								.setMaxValues(1)
+								.addOptions([
+									{
+										label: `Установщик команд`,
+										description: `Включение/выключение Slash-команд на сервере`,
+										value: `itshnik_sm_slash`
+									}, 
+									{
+										label: `Админ-роли`,
+										description: `Выбор ролей, кому будут доступны админ-команды`,
+										value: `itshnik_sm_admin_roles`
+									}
+								])
+						])
 				],
 				ephemeral: true
 			});
@@ -50,63 +64,104 @@ class ITshnik extends BaseCommand {
     }
 	
     componentListener(client, interaction) {
-		if (interaction.isButton()) {
-			if (interaction.customId == "itshnik_si") {
-				interaction.guild.commands.fetch()
-					.then((commands) => {
-						let comps = [];
-						let options = [];
-						client.commands.forEach((cmd) => {
-							if (cmd.type.includes(cmd.CommandType.SLASH) || cmd.type.includes(cmd.CommandType.CTX_USER) || cmd.type.includes(cmd.CommandType.CTX_MESSAGE)) {
-								if (options.length < 25) {
-									options.push({
-										label: cmd.name,
-										description: cmd.usage,
-										value: cmd.name,
-										default: commands.filter(c => c.name == cmd.name).size != 0
-									});
-								} else {
-									const selectMenu = new MessageSelectMenu()
-										.setCustomId('itshnik_si_chooser')
-										.setPlaceholder('Ничего не выбрано')
-										.setMinValues(0)
-										.setMaxValues(options.length)
-										.addOptions(options);
-									if (comps.length < 5) comps.push(
-										new MessageActionRow()
-											.addComponents(selectMenu)
-									);
-									options = [{
-										label: cmd.name,
-										description: cmd.usage,
-										value: cmd.name,
-										default: commands.filter(c => c.name == cmd.name).size != 0
-									}];
+		if (interaction.isSelectMenu()) {
+			if (interaction.customId == "itshnik_sm") {
+				if (interaction.values.includes(`itshnik_sm_slash`)) {
+					interaction.guild.commands.fetch()
+						.then((commands) => {
+							let comps = [];
+							let options = [];
+							client.commands.forEach((cmd) => {
+								if (cmd.type.includes(Config.CommandType.SLASH) || cmd.type.includes(Config.CommandType.CTX_USER) || cmd.type.includes(Config.CommandType.CTX_MESSAGE)) {
+									if (options.length < 25) {
+										options.push({
+											label: cmd.name,
+											description: cmd.usage,
+											value: cmd.name,
+											default: commands.filter(c => c.name == cmd.name).size != 0
+										});
+									} else {
+										const selectMenu = new MessageSelectMenu()
+											.setCustomId('itshnik_sm_slash')
+											.setPlaceholder('Ничего не выбрано')
+											.setMinValues(0)
+											.setMaxValues(options.length)
+											.addOptions(options);
+										if (comps.length < 5) comps.push(
+											new MessageActionRow()
+												.addComponents(selectMenu)
+										);
+										options = [{
+											label: cmd.name,
+											description: cmd.usage,
+											value: cmd.name,
+											default: commands.filter(c => c.name == cmd.name).size != 0
+										}];
+									}
 								}
+							});
+							if (options.length > 0) {
+								const selectMenu = new MessageSelectMenu()
+									.setCustomId('itshnik_sm_slash')
+									.setPlaceholder('Ничего не выбрано')
+									.setMinValues(0)
+									.setMaxValues(options.length)
+									.addOptions(options);
+								if (comps.length < 5) comps.push(
+									new MessageActionRow()
+										.addComponents(selectMenu)
+								);
 							}
+							interaction.reply({
+								content: `Установщик Slash-команд`, 
+								components: comps, 
+								ephemeral: true
+							});
+						});	
+					return true;
+				} else if (interaction.values.includes(`itshnik_sm_admin_roles`)) {
+					interaction.guild.roles.fetch()
+						.then((roles) => {
+							const setted_roles = client.db.get(`guilds.g${interaction.guild.id}.admins`) ?? [];
+							roles = roles.sort((b, a) => a.position - b.position || a.id - b.id);
+							let options = [];
+							roles.forEach((r) => {
+								if (options.length < 25 && r.id != interaction.guild.id) {
+									options.push({
+										label: r.name,
+										value: r.id,
+										default: setted_roles.includes(r.id)
+									});
+								}
+							});
+							interaction.reply({
+								components: [
+									new MessageActionRow()
+										.addComponents([
+											new MessageSelectMenu()
+												.setCustomId('itshnik_sm_admin_roles')
+												.setPlaceholder('Выбери роли для доступа к админ-командам')
+												.setMinValues(0)
+												.setMaxValues(options.length)
+												.addOptions(options)
+										])
+								],
+								ephemeral: true
+							});
 						});
-						if (options.length > 0) {
-							const selectMenu = new MessageSelectMenu()
-								.setCustomId('itshnik_si_chooser')
-								.setPlaceholder('Ничего не выбрано')
-								.setMinValues(0)
-								.setMaxValues(options.length)
-								.addOptions(options);
-							if (comps.length < 5) comps.push(
-								new MessageActionRow()
-									.addComponents(selectMenu)
-							);
-						}
-						interaction.reply({
-							content: `Установщик Slash-команд`, 
-							components: comps, 
-							ephemeral: true
-						});
-					});	
+					return true;
+				} 
+				return false;
+			}
+			if (interaction.customId == "itshnik_sm_admin_roles") {
+				client.db.set(`guilds.g${interaction.guild.id}.admins`, interaction.values);
+				interaction.reply({
+					content: `Выбранным ролям выдан доступ к админ-командам: ${interaction.values.length == 0? `Ролей нет`: `<@&${interaction.values.join(`> <@&`)}>`}`,
+					ephemeral: true
+				});
 				return true;
 			}
-		} else if (interaction.isSelectMenu()) {
-			if (interaction.customId == "itshnik_si_chooser") {
+			if (interaction.customId == "itshnik_sm_slash") {
 				interaction.guild.commands.fetch()
 					.then((currentCommands) => {
 						let updatedCommands = [];
