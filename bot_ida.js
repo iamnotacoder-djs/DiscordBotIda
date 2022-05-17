@@ -2,7 +2,6 @@ const   { Client, Collection, Intents } = require("discord.js"),
         client = new Client({
             intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES ]
         }),
-        discordModals = require('discord-modals'),
         Timeout = require("./structures/Timeout"),
         Logger = require("./structures/Logger"),
         ConfigUtil = require("./structures/ConfigUtil");
@@ -18,7 +17,6 @@ client.login(Config.token)
         client.commands = new Collection();
         client.timeout5m = new Timeout(1000 * 60 * 5);
         client.timeout5m.start();
-        discordModals(client)
         
         require(`./handlers/events.js`).init(client);
         require(`./handlers/commands.js`).init(client);

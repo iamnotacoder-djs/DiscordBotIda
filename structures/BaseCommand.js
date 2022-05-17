@@ -54,11 +54,6 @@ class BaseCommand {
         return false;
     }
 
-    modalListener(client, interaction) {
-        // do nothing
-        return false;
-    }
-
     setupTimeouts(client) {
         // do nothing
         return false;

@@ -74,7 +74,7 @@ class Logger {
 
     error(message) {
         console.error(message);
-        if (this.channel) this.channel.send(`@everyone\n${message}`).catch(console.error);
+        if (this.channel) this.channel?.send(`@everyone\n${message}`).catch(console.error);
     }
 
 }

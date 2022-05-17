@@ -40,7 +40,12 @@ class Kick extends BaseCommand {
             user = command.options.getUser(`user`);
         }
         const member = await command.guild.members.fetch(user.id);
-        if (user.bot || !member.kickable || [command.user.id, client.user.id].includes(user.id) || command.member.roles.higest.position <= member.roles.higest.position) return command.reply({
+        const setted_roles = client.db.get(`guilds.g${command.guild.id}.admins`) ?? [];
+        let kickable = true;
+        if (member.permissions.has('ADMINISTRATOR') || (setted_roles.length != 0 && member.roles.cache.some(role => setted_roles.includes(role.id)))) {
+            kickable = false;
+        }
+        if (user.bot || !member.kickable || !kickable || [command.user.id, client.user.id].includes(user.id) || command.member.roles.highest.position <= member.roles.highest.position) return command.reply({
             content: `Пользователь <@${user.id}> не доступен для кика.`,
             ephemeral: true
         });

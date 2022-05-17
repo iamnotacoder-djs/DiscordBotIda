@@ -1,7 +1,6 @@
 'use strict';
 const BaseCommand = require('../structures/BaseCommand'),
-    { Modal, TextInputComponent, showModal } = require('discord-modals'),
-    { MessageEmbed, MessageAttachment } = require('discord.js');
+    { MessageEmbed, MessageAttachment, Modal, MessageActionRow, TextInputComponent } = require('discord.js');
 
 class PostEmbed extends BaseCommand {
     
@@ -82,104 +81,116 @@ class PostEmbed extends BaseCommand {
                 avatar: avatar,
                 server: server
             });
-            let inputs = [
-                new TextInputComponent()
-                    .setCustomId('title')
-                    .setLabel('Заголовок')
-                    .setStyle('SHORT') 
-                    .setMaxLength(256)
-                    .setPlaceholder('Заголовок'),
-                new TextInputComponent()
-                    .setCustomId('description')
-                    .setLabel('description')
-                    .setStyle('LONG') // 'SHORT' or 'LONG'
-                    .setMaxLength(4000)
-                    .setPlaceholder('Описание'),
-                new TextInputComponent()
-                    .setCustomId('color')
-                    .setLabel('#HEX значение цвета')
-                    .setStyle('SHORT') // 'SHORT' or 'LONG'
-                    .setMinLength(6)
-                    .setMaxLength(7)
-                    .setPlaceholder('#FFFFFF'),
-                new TextInputComponent()
-                    .setCustomId('image')
-                    .setLabel('Ссылка на изображение')
-                    .setStyle('SHORT') // 'SHORT' or 'LONG'
-                    .setPlaceholder('http://iamnotacoder.ru/wp-content/uploads/2022/02/modals-1200x675.png')
+            
+            let components = [
+                new MessageActionRow().addComponents(
+                    new TextInputComponent()
+                        .setCustomId('title')
+                        .setLabel('Заголовок')
+                        .setStyle('SHORT') 
+                        .setMaxLength(256)
+                        .setPlaceholder('Заголовок')
+                    ),
+                new MessageActionRow().addComponents(
+                    new TextInputComponent()
+                        .setCustomId('description')
+                        .setLabel('description')
+                        .setStyle('PARAGRAPH') // 'SHORT' or 'PARAGRAPH'
+                        .setMaxLength(4000)
+                        .setPlaceholder('Описание')
+                    ),
+                new MessageActionRow().addComponents(
+                    new TextInputComponent()
+                        .setCustomId('color')
+                        .setLabel('#HEX значение цвета')
+                        .setStyle('SHORT') // 'SHORT' or 'PARAGRAPH'
+                        .setMinLength(6)
+                        .setMaxLength(7)
+                        .setPlaceholder('#FFFFFF')
+                    ),
+                new MessageActionRow().addComponents(
+                    new TextInputComponent()
+                        .setCustomId('image')
+                        .setLabel('Ссылка на изображение')
+                        .setStyle('SHORT') // 'SHORT' or 'PARAGRAPH'
+                        .setPlaceholder('http://iamnotacoder.ru/wp-content/uploads/2022/02/modals-1200x675.png')
+                )
             ];
             if (!server) {
-                inputs.push(
-                    new TextInputComponent()
-                        .setCustomId('footer')
-                        .setLabel('Футер')
-                        .setStyle('SHORT') // 'SHORT' or 'LONG'
-                        .setMaxLength(2048)
-                        .setPlaceholder('Футер')
+                components.push(
+                    new MessageActionRow().addComponents(
+                        new TextInputComponent()
+                            .setCustomId('footer')
+                            .setLabel('Футер')
+                            .setStyle('SHORT') // 'SHORT' or 'PARAGRAPH'
+                            .setMaxLength(2048)
+                            .setPlaceholder('Футер')
+                    )
                 );
             }
-            const modal = new Modal()
-                .setCustomId('cmd_postembed_modal')
-                .setTitle('Опубликовать Embed')
-                .addComponents(inputs);
-            return showModal(modal, {
-                client: client, // Client to show the Modal through the Discord API.
-                interaction: command // Show the modal with interaction data.
-            });
+            return command.showModal(
+                new Modal()
+                    .setCustomId('cmd_postembed_modal')
+                    .setTitle('Опубликовать Embed')
+                    .setComponents(components)
+            );
         }
     }
 
-    modalListener(client, modal) {
-		if	(modal.customId === 'cmd_postembed_modal') {
-            modal.deferReply({ ephemeral: true })
-                .then(() => {
-                    const 	title = modal.getTextInputValue('title') ?? ``, 
-                            description = modal.getTextInputValue('description') ?? ``,
-                            footer = modal.getTextInputValue('footer') ?? ``,
-                            color = modal.getTextInputValue('color') ?? ``,
-                            image = modal.getTextInputValue('image') ?? ``,
-                            presets = client.db.get(`postembed.spawns.u${modal.user.id}`); // avatar, server
-                    let embed = new MessageEmbed();
-                    if (title.length > 0) embed.setTitle(title);
-                    if (description.length > 0) embed.setDescription(description);
-                    if (footer.length > 0) embed.setFooter({
-                        text: footer
-                    });
-                    if (footer.length > 0) embed.setFooter({
-                        text: footer
-                    });
-                    const reg = /^#([0-9a-f]{3}){1,2}$/i;
-                    if (reg.test(color)) {
-                        embed.setColor(color);
-                    } else {
-                        embed.setColor(Config.embed_color);
-                    }
-                    let files = [];
-                    if (image.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) !== null) {
-                        files.push(new MessageAttachment(image, 'file.png'));
-                        embed.setImage('attachment://file.png')
-                    }
-                    if (presets.avatar) {
-                        embed.setAuthor({
-                            name: modal.member.displayName, 
-                            iconURL: modal.member.displayAvatarURL(),
-                            url: `https://discordapp.com/users/${modal.user.id}/`
+    componentListener(client, interaction) {
+        if (interaction.isModalSubmit()) {
+            if (interaction.customId === 'cmd_postembed_modal') {
+                interaction.deferReply({ ephemeral: true })
+                    .then(() => {
+                        const 	title = interaction.fields.getTextInputValue('title') ?? ``, 
+                                description = interaction.fields.getTextInputValue('description') ?? ``,
+                                footer = interaction.fields.components.some((c) => c.components[0].customId == "footer") ? interaction.fields.getTextInputValue('footer'): ``,
+                                color = interaction.fields.getTextInputValue('color') ?? ``,
+                                image = interaction.fields.getTextInputValue('image') ?? ``,
+                                presets = client.db.get(`postembed.spawns.u${interaction.user.id}`); // avatar, server
+                        let embed = new MessageEmbed();
+                        if (title.length > 0) embed.setTitle(title);
+                        if (description.length > 0) embed.setDescription(description);
+                        if (footer.length > 0) embed.setFooter({
+                            text: footer
+                        });
+                        if (footer.length > 0) embed.setFooter({
+                            text: footer
+                        });
+                        const reg = /^#([0-9a-f]{3}){1,2}$/i;
+                        if (reg.test(color)) {
+                            embed.setColor(color);
+                        } else {
+                            embed.setColor(Config.embed_color);
+                        }
+                        let files = [];
+                        if (image.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) !== null) {
+                            files.push(new MessageAttachment(image, 'file.png'));
+                            embed.setImage('attachment://file.png')
+                        }
+                        if (presets.avatar) {
+                            embed.setAuthor({
+                                name: interaction.member.displayName, 
+                                iconURL: interaction.member.displayAvatarURL(),
+                                url: `https://discordapp.com/users/${interaction.user.id}/`
+                            })
+                        }
+                        if (presets.server) {
+                            embed.setFooter({
+                                text: interaction.guild.name, 
+                                iconURL: interaction.guild.iconURL
+                            })
+                        }
+                        interaction.channel.send({
+                            embeds: [embed],
+                            files: files
                         })
-                    }
-                    if (presets.server) {
-                        embed.setFooter({
-                            text: modal.guild.name, 
-                            iconURL: modal.guild.iconURL
-                        })
-                    }
-                    modal.channel.send({
-                        embeds: [embed],
-                        files: files
-                    })
-                    modal.followUp({ content: `Опубликовано.`, ephemeral: true });
-                });          
-			return true;
+                        interaction.followUp({ content: `Опубликовано.`, ephemeral: true });
+                    });          
+                return true;
+            }
         }
+        return false;
     }
 
 }

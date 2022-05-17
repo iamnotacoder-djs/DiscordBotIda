@@ -25,7 +25,21 @@ module.exports = {
                 });
                     
                 const setted_roles = client.db.get(`guilds.g${message.guild.id}.admins`) ?? [];
-                if (cmd.category.includes(Config.CommandCategory.ADMIN) && perms_error_author.length != 0 && message.member.roles.cache.some(role => setted_roles.includes(role.id))) perms_error_author = [];
+                if (cmd.category.includes(Config.CommandCategory.ADMIN)) {
+                    if (setted_roles.length == 0) {
+                        if (message.member.permissions.has('ADMINISTRATOR')) {
+                            // ok
+                        } else {
+                            perms_error_author.push(`ADMINISTRATOR / MODERATOR`);
+                        }
+                    } else {
+                        if (message.member.permissions.has('ADMINISTRATOR') || message.member.roles.cache.some(role => setted_roles.includes(role.id))) {
+                            // ok
+                        } else {
+                            perms_error_author.push(`ADMINISTRATOR / MODERATOR`);
+                        }
+                    }
+                }
 
                 if (perms_error_author.length != 0) 
                     perms_error.push(`У тебя нет доступа к использованию команды \`${cmd.name}\`.\n||Требуемые права: ${perms_error_author.join(',')}||`);

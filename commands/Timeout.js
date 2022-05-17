@@ -53,7 +53,12 @@ class Timeout extends BaseCommand {
         if (time > 1000 * 60 * 60 * 24 * 7) time = 1000 * 60 * 60 * 24 * 7;
 
         const member = await command.guild.members.fetch(user.id);
-        if (user.bot || !member.moderatable || [command.user.id, client.user.id].includes(user.id) || command.member.roles.higest.position <= member.roles.higest.position) return command.reply({
+        const setted_roles = client.db.get(`guilds.g${command.guild.id}.admins`) ?? [];
+        let moderatable = true;
+        if (member.permissions.has('ADMINISTRATOR') || (setted_roles.length != 0 && member.roles.cache.some(role => setted_roles.includes(role.id)))) {
+            moderatable = false;
+        }
+        if (user.bot || !member.moderatable || !moderatable || [command.user.id, client.user.id].includes(user.id) || command.member.roles.highest.position <= member.roles.highest.position) return command.reply({
             content: `Пользователь <@${user.id}> не доступен для таймаута.`,
             ephemeral: true
         });
