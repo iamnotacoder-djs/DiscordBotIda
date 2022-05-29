@@ -43,7 +43,7 @@ class Quiz extends BaseCommand {
     componentListener(client, interaction) {
         if (interaction.isButton() && interaction.customId.includes(`quizgame_`)) {
             
-            if (client.db.get(`quiz.spawns.m${interaction.message.id}`) != interaction.user.id) return interaction.reply(getMessagePermissionError(client.db.get(`quiz.spawns.m${interaction.message.id}`)));
+            if (client.db.get(`quiz.spawns.m${interaction.message.id}`) != interaction.user.id) return interaction.reply(this.getMessagePermissionError(client.db.get(`quiz.spawns.m${interaction.message.id}`)));
             let date = new Date(); 
         
             if (interaction.customId.includes("quizgame_mmenu_back_")) {

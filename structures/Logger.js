@@ -1,4 +1,5 @@
 'use strict';
+const   { TextChannel } = require("discord.js")
 
 class Logger {
 
@@ -12,7 +13,7 @@ class Logger {
         return new Promise((resolve, reject) => {
             this.client = client;
             try {
-                this.client?.channels.fetch("959096618395787344")
+                this.client.channels.fetch("959096618395787344")
                     .then((channel) => {
                         this.channel = channel;
                         resolve();
@@ -74,7 +75,7 @@ class Logger {
 
     error(message) {
         console.error(message);
-        if (this.channel) this.channel?.send(`@everyone\n${message}`).catch(console.error);
+        if (this.channel instanceof TextChannel) this.channel.send(`@everyone\n${message}`).catch(console.error);
     }
 
 }

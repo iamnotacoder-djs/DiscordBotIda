@@ -242,7 +242,9 @@ class ITshnik extends BaseCommand {
 						});
 					}
 					client.db.set(`guilds.serverBanner`, guilds);
-					fs.unlinkSync(`./assets/guild_banners/${interaction.guild.id}.png`);
+					if (fs.existsSync(`./assets/guild_banners/${interaction.guild.id}.png`)) {
+						fs.unlinkSync(`./assets/guild_banners/${interaction.guild.id}.png`);
+					}
 					interaction.reply({
 						content: `Статус в баннере сервера ${serverBanner? 'включен': 'выключен'}`,
 						ephemeral: true

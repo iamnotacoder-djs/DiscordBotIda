@@ -44,7 +44,7 @@ class Purge extends BaseCommand {
                 if (u.id != user.id) user = u;
             });
         } else {
-            let res = command.options.getNumber(`count`);
+            let res = command.options.getInteger(`count`);
             if (res != null) count = res;
             user = command.options.getUser(`user`);
         }

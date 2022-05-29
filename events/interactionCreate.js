@@ -56,7 +56,7 @@ module.exports = {
                         return interaction.reply({
                             embeds: [
                                 new MessageEmbed()
-                                    .setTitle(`Ошибка выполнения команды ${command}`)
+                                    .setTitle(`Ошибка выполнения команды ${cmd.name}`)
                                     .setDescription(`${perms_error.join('\n')}`)
                                     .setColor(Config.embed_color)
                             ],
@@ -69,12 +69,12 @@ module.exports = {
                     interaction.reply({
                         embeds: [
                             new MessageEmbed()
-                                .setDescription(`Ошибка выполнения команды ${command}`)
+                                .setDescription(`Ошибка выполнения команды ${cmd.name}`)
                                 .setColor(Config.embed_color)
                         ],
                         ephemeral: true
                     });
-                    Log.send(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${command}: ${err}`);
+                    Log.send(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${cmd.name}: ${err}`);
                 }
             }
         } else {
