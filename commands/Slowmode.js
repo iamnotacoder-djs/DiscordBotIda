@@ -35,7 +35,7 @@ class Slowmode extends BaseCommand {
             let res = command.content.match(/( )([0-9].*)( )/gm);
             if (res?.length >= 1) time = parseInt(res[0].trim());
         } else {
-            let res = command.options.getNumber(`time`);
+            let res = command.options.getInteger(`time`);
             if (res != null) time = res;
         }
         if (time < 0) time = 0;

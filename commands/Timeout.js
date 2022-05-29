@@ -46,7 +46,7 @@ class Timeout extends BaseCommand {
             if (res?.length >= 1) time = 1000 * 60 * parseInt(res[0].trim());
         } else {
             user = command.options.getUser(`user`);
-            let res = command.options.getNumber(`time`);
+            let res = command.options.getInteger(`time`);
             if (res != null) time = 1000 * 60 * res;
         }
         if (time < 1000 * 60) time = 0;
