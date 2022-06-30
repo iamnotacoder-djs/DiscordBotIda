@@ -108,14 +108,14 @@ class Poll extends BaseCommand {
         });
         client.db.set(`polls.p${message.id}`, poll);
         command.reply({
-            content: `Голосование было создано:\nhttps://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`,
+            content: `Голосование было создано:\n${message.url}`,
             ephemeral: true
         });
         // Create thread
         if (command.inGuild()) message.startThread( { name: `[Обсуждение] ${poll.question.substring(0, 20)}` } )
             .then(async (thread) => {
                 thread.send(`${command.user}`).then((m) => m.delete());
-                thread.send(`Голосовать здесь:\nhttps://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`)
+                thread.send(`Голосовать здесь:\n${message.url}`)
             });
     }
 
