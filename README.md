@@ -6,11 +6,11 @@
 - Подправить под свои нужды. 
 - Запустить.
 ##### Примеры использования:
-[RoomCreator](https://github.com/idaspin/DiscordBotRoomCreator)
+[RoomCreator](https://github.com/idaspin/DiscordBotRoomCreator)<br>
 [Franky](https://github.com/idaspin/DiscordBotFranky)
 
 #### Технические требования / ограничения:
-[Discord.js@13.x.x](https://www.npmjs.com/package/discord.js/v/13.9.2)
+[Discord.js@13.x.x](https://www.npmjs.com/package/discord.js/v/13.9.2)<br>
 [quick.db@7.1.3](https://www.npmjs.com/package/quick.db/v/7.1.3)
 
 ## Установка
