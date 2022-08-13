@@ -1,0 +1,22 @@
+{
+    "langs": [
+        "Русский",
+        "Український",
+        "English"
+    ],
+	"cmd_lang_guild_success": [
+        "Настройки бота изменены.",
+        "Налаштування бота змінено.",
+        "Bot settings changed."
+	],
+	"cmd_lang_guild_error": [
+        "Требуются права администратора для изменений настроек сервера.",
+        "Потрібні права адміністратора для зміни налаштувань сервера.",
+        "Requires administrator rights to change server settings."
+	],
+	"cmd_lang_user_success": [
+        "Настройка сохранена.",
+        "Налаштування збережено.",
+        "The setting is saved."
+	]
+}

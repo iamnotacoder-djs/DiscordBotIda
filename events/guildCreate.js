@@ -3,9 +3,6 @@ module.exports = {
     once: false,
     async execute(client, guild) {
         await Log.init(client);
-        guild.me.setNickname(Config.bot_name)
-            .catch(() => {
-                // do nothing
-            });
+		client.db.set(guild.id, Config.Locales[guild.preferredLocale] ?? 0);
     }
 }

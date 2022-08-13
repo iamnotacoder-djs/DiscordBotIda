@@ -6,24 +6,21 @@
 - Подправить под свои нужды. 
 - Запустить.
 ##### Примеры использования:
-[RoomCreator](https://github.com/idaspin/DiscordBotRoomCreator)<br>
-[Franky](https://github.com/idaspin/DiscordBotFranky)
+[Franky](https://github.com/idaspin/DiscordBotFranky)<br>
+[RoomCreator](https://github.com/idaspin/DiscordBotRoomCreator)
 
 #### Технические требования / ограничения:
-[Discord.js@13.x.x](https://www.npmjs.com/package/discord.js/v/13.9.2)<br>
-[quick.db@7.1.3](https://www.npmjs.com/package/quick.db/v/7.1.3)
+[Discord.js@14.1.2](https://www.npmjs.com/package/discord.js/v/14.1.2)<br>
+[quick.db@9.0.6](https://www.npmjs.com/package/quick.db/v/9.0.6)
 
 ## Установка
-- Загрузить репозиторий `git clone https://github.com/idaspin/DiscordBotIda.git`
-- В папке проекта инициализировать node-проект и загрузить модули `npm init`, `npm i discord.js@13.9.2 fs quick.db@7.1.3 better-sqlite3`
-- В **DiscordBotIda/structures/Logger.js** заменить идентификатор: `959096618395787344` - на ID канала для логов. Бот должен быть приглашен на сервер с указанным каналом.
+- Загрузить репозиторий `git clone https://github.com/idaspin/DiscordBotIda_boosty.git`
+- В папке проекта инициализировать node-проект и загрузить модули `npm init`, `npm i discord.js@14.1.2 fs quick.db@9.0.6 better-sqlite3`
+- В *config.json* заменить идентификаторы: `controller_guild_id` - сервера для логов (в данный момент не используется), `controller_logs_id` - канала для логов.
 - Запустить с помощью `node .`
 
-
 ## Присоединяйся к сообществу
-
 Есть вопросы по боту или программированию в целом? Залетай в **Хаб Не ITшников**: Сообщество разработчиков, программистов и просто людей увлекающихся кодингом.
-
 [Discord сервер](https://discord.gg/YeqrTtpmaH)<br>
 [Вконтакте](https://vk.com/iamnotacoderdjs)<br>
 [Телеграм](https://t.me/iamnotacoderdjs)

@@ -1,4 +1,5 @@
 'use strict';
+const { ApplicationCommandType } = require('discord.js');
 
 class BaseCommand {
  
@@ -15,23 +16,16 @@ class BaseCommand {
     user_permissions = [
 
     ];
-    options = [
-        // {
-        //     name: "def",
-        //     description: "дефолтная опция",
-        //     type: "STRING"
-        // }
-    ];
+    options = [];
     slash = { 
         name: this.name, 
         description: this.usage, 
-        type: `CHAT_INPUT`, 
-        options: this.options, 
-        defaultPermission: false 
+        type: ApplicationCommandType.ChatInput, 
+        options: this.options
     };
     context = {
         name: this.name, 
-        type: `MESSAGE`
+        type: ApplicationCommandType.Message
     };
     componentsNames = [];
     

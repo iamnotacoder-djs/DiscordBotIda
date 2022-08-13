@@ -12,20 +12,15 @@ class Logger {
     init(client) {
         return new Promise((resolve, reject) => {
             this.client = client;
-            try {
-                this.client.channels.fetch("959096618395787344")
-                    .then((channel) => {
-                        this.channel = channel;
-                        resolve();
-                    })
-                    .catch((e) => {
-                        console.error(e);
-                        resolve(e);
-                    });
-            } catch (e) {
-                console.error(e);
-                resolve(e);
-            }
+			this.client.channels.fetch(Config.controller_logs)
+				.then((channel) => {
+					this.channel = channel;
+					resolve();
+				})
+				.catch((e) => {
+					console.error(e);
+					resolve(e);
+				});
         });
     }
 

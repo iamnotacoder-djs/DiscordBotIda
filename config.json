@@ -1,10 +1,11 @@
 {
   "token": "token",
-  "prefix": "ida!",
+  "prefix": "!",
   
   "embed_color": "#ffc200",
-  "bot_tag": "イド",
-  "bot_name": "Ида",
   
-  "debug": true
+  "debug": true,
+
+  "controller_guild": "controller_guild_id",
+  "controller_logs": "controller_logs_id"
 }
