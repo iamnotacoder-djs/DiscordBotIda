@@ -49,7 +49,8 @@ module.exports = {
             }
         } else {
 			let found = false;
-            for(let cmd of client.commands) {
+            for(let cmdkey of client.commands.keys()) {
+                const cmd = client.commands.get(cmdkey);
 				let regexName = false;
 				cmd.componentsNames.forEach((name) => {
 					if (name.includes('...') && interaction.customId.includes(name.replace('...', ''))) regexName = true;
