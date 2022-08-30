@@ -1,5 +1,5 @@
-const fs = require('fs');
-const BaseCommand = require('../structures/BaseCommand');
+const   fs = require('fs'),
+        BaseCommand = require('../structures/BaseCommand');
 
 module.exports.init = async (client) => {
     Log.send(`[HANDLER/COMMANDS] Хандлер Slash-комманд запущен.`);

@@ -2,9 +2,13 @@
 const BaseCommand = require('../structures/BaseCommand'),
 	{ ApplicationCommandType, PermissionFlagsBits, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js');
 
-class FindTheUser extends BaseCommand {
+/**
+ * Пример команды смены языка бота
+ * "Локализация" доступна только внутри команды
+ */
+class Lang extends BaseCommand {
 
-	name = "язык";
+	name = "lang";
 	usage = Config.Strings.langs.join(', ');
 	type = [Config.CommandType.CHAT, Config.CommandType.SLASH_APPLICATION];
 	bot_permissions = [
@@ -15,7 +19,13 @@ class FindTheUser extends BaseCommand {
 		name: this.name,
 		description: this.usage,
 		type: ApplicationCommandType.ChatInput,
-		options: this.options
+		options: this.options,
+		nameLocalizations: {
+			"ru": Config.Strings.cmd_lang_name[0],
+			"uk": Config.Strings.cmd_lang_name[1],
+			"en-US": Config.Strings.cmd_lang_name[2],
+			"en-GB": Config.Strings.cmd_lang_name[2]
+		}
 	};
 	componentsNames = [];
 
@@ -26,7 +36,19 @@ class FindTheUser extends BaseCommand {
 			type: ApplicationCommandOptionType.String,
 			description: `Bot's Language`,
 			required: true,
-			choices: []
+			choices: [],
+			nameLocalizations: {
+				"ru": Config.Strings.cmd_lang_name[0],
+				"uk": Config.Strings.cmd_lang_name[1],
+				"en-US": Config.Strings.cmd_lang_name[2],
+				"en-GB": Config.Strings.cmd_lang_name[2]
+			},
+			descriptionLocalizations: {
+				"ru": Config.Strings.cmd_lang_opt_description[0],
+				"uk": Config.Strings.cmd_lang_opt_description[1],
+				"en-US": Config.Strings.cmd_lang_opt_description[2],
+				"en-GB": Config.Strings.cmd_lang_opt_description[2]
+			}
 		};
 		for (let i = 0; i < Config.Strings.langs.length; i++) {
 			option.choices.push({
@@ -86,4 +108,4 @@ class FindTheUser extends BaseCommand {
 	}
 }
 
-module.exports = FindTheUser
+module.exports = Lang

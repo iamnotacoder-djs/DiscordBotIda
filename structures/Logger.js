@@ -1,36 +1,43 @@
 'use strict';
-const   { TextChannel } = require("discord.js")
+const   { TextChannel, Client } = require("discord.js")
 
 class Logger {
 
     logs = new Map();
 
+	/**
+	 * Создает экземпляр Logger
+	 * @param  {Client} Экземпляр Client для доступа к каналу логов
+	 */
     constructor(client) {
         if (client) this.client = client;
     }
 
-    init(client) {
-        return new Promise((resolve, reject) => {
-            this.client = client;
-			this.client.channels.fetch(Config.controller_logs)
-				.then((channel) => {
-					this.channel = channel;
-					resolve();
-				})
-				.catch((e) => {
-					console.error(e);
-					resolve(e);
-				});
-        });
+	/**
+	 * Обновление Client, если он еще не был указан
+	 * @param  {Client} Экземпляр Client для доступа к каналу логов
+	 */
+    async init(client) {
+        this.client = client;
+        this.channel = await this.client.channels.fetch(Config.controller_logs).catch(() => {});
     }
 
+    /**
+     * Вывод текста в консоль(debug?) и канал для логов
+     * @param  {string} message Текст сообщения
+     */
     send(message) {
         if (Config.debug || !this.channel) console.log(message);
         if (this.channel) {
             let key = `[]`;
             if (message.match(/(\[)([a-z].*)(\])/ig)) key = message.match(/(\[)([a-z].*)(\])/ig)[0];
             if (!this.logs.has(message)) {
-                this.channel.send(`${message}`)
+                this.channel.send({
+                    content: `${message}`,
+                    allowedMentions: {
+                        users: []
+                    }
+                })
                     .then((m) => {
                         this.logs.set(message, {
                             t: Date.now(),
@@ -41,7 +48,12 @@ class Logger {
                     .catch(console.error);
             } else {
                 if (Date.now() - this.logs.get(message).t > 1000 * 60 * 60) {
-                    this.channel.send(`${message}`)
+                    this.channel.send({
+                        content: `${message}`,
+                        allowedMentions: {
+                            users: []
+                        }
+                    })
                         .then((m) => {
                             this.logs.set(message, {
                                 t: Date.now(),
@@ -68,9 +80,16 @@ class Logger {
         }
     }
 
+    /**
+     * Вывод ошибки в консоль и канал для логов
+     * @param  {string} message Текст сообщения
+     */
     error(message) {
         console.error(message);
-        if (this.channel instanceof TextChannel) this.channel.send(`@everyone\n${message}`).catch(console.error);
+        let channel = this?.channel;
+        if (channel instanceof TextChannel) {
+            channel.send(`@everyone\n${message}`).catch(console.error);
+        }
     }
 
 }

@@ -1,4 +1,5 @@
-const { EmbedBuilder } = require("discord.js");
+const { InteractionType, EmbedBuilder } = require("discord.js"),
+      cooldown = new Map();
 
 module.exports = {
     name: 'interactionCreate',
@@ -6,39 +7,69 @@ module.exports = {
     async execute(client, interaction) {
         await Log.init(client);
 
-        if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
+        // Кулдаун на команды
+		if (![InteractionType.ApplicationCommandAutocomplete, InteractionType.ModalSubmit].includes(interaction?.type)) {
+            const _cooldown = cooldown.get(interaction.user.id) ?? 0;
+            if (Date.now() - _cooldown < 2000) {
+                return interaction.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription(`На команды бота установлен кулдаун :/`)
+                            .setColor(Config.embed_color)
+                    ],
+                    ephemeral: true
+                });
+            }
+            cooldown.set(interaction.user.id, Date.now());
+		}
+
+        // Slash команды и Autocomplete
+        if (interaction.isChatInputCommand() || interaction.isContextMenuCommand() || interaction?.type == InteractionType.ApplicationCommandAutocomplete) {
+            // Получаем команду их хандлера по имени
             const cmd = client.commands.get(interaction.commandName);
-            if (cmd && ((cmd.type.includes(Config.CommandType.SLASH) || cmd.type.includes(Config.CommandType.SLASH_APPLICATION)) && interaction.isChatInputCommand() || cmd.type.includes(Config.CommandType.CTX_USER) && interaction.isUserContextMenuCommand() || cmd.type.includes(Config.CommandType.CTX_MESSAGE) && interaction.isMessageContextMenuCommand())) {
-                
-                try {
-                    return cmd.exec(client, interaction);
-                } catch (err) {
+            // Проверяем соответствия
+            if (cmd) {
+                function _catch(e) {
+                    // Сообщаем об ошибке
+                    Log.error(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${cmd.name}: ${e}`);
                     interaction.reply({
                         embeds: [
-                            new EmbedBuilder()
+                            new EmbedBuilder()                                
                                 .setDescription(`Ошибка выполнения команды ${cmd.name}`)
                                 .setColor(Config.embed_color)
                         ],
                         ephemeral: true
                     });
-                    Log.send(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${cmd.name}: ${err}`);
+                }
+                if (interaction?.type == InteractionType.ApplicationCommandAutocomplete) {
+                    cmd.autocomplete(client, interaction).catch(_catch);
+                } else {
+                    cmd.exec(client, interaction).catch(_catch);
                 }
             }
         } else {
-            let found = false;
-            client.commands.forEach((cmd) => {
-                let regexName = false;
-                cmd.componentsNames.forEach((name) => {
-                    if (name.includes('...') && interaction.customId.includes(name.replace('...', ''))) regexName = true;
-                });
-                if ((cmd.componentsNames.includes(interaction.customId) || regexName) && cmd.componentListener(client, interaction)) found = true;
-            });
-            
-            if (!found) defer(interaction);
+			let found = false;
+            for(let cmd of client.commands) {
+				let regexName = false;
+				cmd.componentsNames.forEach((name) => {
+					if (name.includes('...') && interaction.customId.includes(name.replace('...', ''))) regexName = true;
+				});
+				if ((cmd.componentsNames.includes(interaction.customId) || regexName) && 
+                    await cmd.componentListener(client, interaction).catch((e) => {
+						if (!interaction.replied) interaction.reply({
+							embeds: [
+								new EmbedBuilder()
+									.setDescription(`Ошибка компонента ${interaction.customId}`)
+									.setColor(Config.embed_color)
+							],
+							ephemeral: true
+						});
+						Log.error(`[EVENT/INTERACTIONCREATE] Ошибка компонента ${interaction.customId}: ${e}`);
+                    })
+                ) found = true;
+            }
+
+			if (!found && !interaction.replied) interaction.deferUpdate();
         }
     }
-}
-
-async function defer(interaction) {
-    if (!interaction.replied) interaction.deferUpdate();
 }

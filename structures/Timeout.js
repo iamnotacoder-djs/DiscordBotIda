@@ -5,11 +5,21 @@ class Timeout {
 	execs = new Map();
 	started = false;
 
-	constructor(timer = 1000 * 60 * 60) {
+	/**
+	 * Создает экземпляр Timeout
+	 * @param  {number} timer=1000*60*60 Кол-во миллисекунд
+	 * @param  {boolean} start=false Стартовать с инициализацией
+	 */
+	constructor(timer = 1000 * 60 * 60, start = false) {
 		this.timer = timer;
 		this.timeout = 0;
+		Log.send(`[STRUCTURES/TIMEOUT] Модуль Timeout инициализирован. Таймаут: ${this.timer}ms`);
+		if (start) this.start();
 	}
 
+	/**
+	 * Запускает таймер
+	 */
 	start() {
 		if (this.timeout == 0) {
 			this.timeout = 1;
@@ -18,7 +28,12 @@ class Timeout {
 		return this.timeout == 0;
 	}
 
-	add(k = "", v = () => { }) {
+	/**
+	 * Добавить в расписание выполняемую функцию
+	 * @param  {string} k="" Уникальный ключ
+	 * @param  {function} v=()=>{} Исполняемый код
+	 */
+	add(k = "", v = ()=>{}) {
 		if ((typeof k === 'string' || k instanceof String) && k != "" && typeof v === 'function') {
 			this.execs.set(k, v);
 			return true;
@@ -27,6 +42,10 @@ class Timeout {
 		}
 	}
 
+	/**
+	 * Удалить из расписание выполняемую функцию
+	 * @param  {string} k="" Уникальный ключ
+	 */
 	delete(k = "") {
 		if ((typeof k === 'string' || k instanceof String) && k != "" && this.execs.get(k) != undefined) {
 			this.execs.delete(k);

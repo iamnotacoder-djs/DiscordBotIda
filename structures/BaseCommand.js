@@ -1,21 +1,17 @@
 'use strict';
-const { ApplicationCommandType } = require('discord.js');
+const { Client, ApplicationCommandType, Message, BaseInteraction, AutocompleteInteraction } = require('discord.js');
 
 class BaseCommand {
  
-    // Основные
+    // Основные параметры
     name = "commandname";
     usage = "Описание функционала команды";
     type = [];
     category = [];
-    bot_permissions = [
-
-    ];
+    bot_permissions = [];
     
     // Дополнительные
-    user_permissions = [
-
-    ];
+    user_permissions = [];
     options = [];
     slash = { 
         name: this.name, 
@@ -30,25 +26,61 @@ class BaseCommand {
     componentsNames = [];
     
     // Методы
+    
+	/**
+	 * Создает экземпляр BaseCommand
+	 */
     constructor() {
+        // do nothing
     }
 
-    exec(client, command) {
+    
+    /**
+     * Вызов слушателя команды
+     * @param  {Client} client Экземпляр Client
+     * @param  {(Message|BaseInteraction)} command Поставляемый объект сообщения или интеракции
+     */
+    async exec(client, command) {
         command.user = command.author ?? command.user;
         Log.send(`[COMMANDS/${this.name.toUpperCase()}] Usage <@${command?.user?.id}> <#${command?.channel?.id}>`);
         this.execute(client, command);
     }
 
+    /**
+     * Вызов слушателя команды
+     * @param  {Client} client Экземпляр Client
+     * @param  {(Message|BaseInteraction)} command Поставляемый объект сообщения или интеракции
+     */
     async execute(client, command) {
         // do nothing
     }
 
-    componentListener(client, interaction) {
+    /**
+     * Слушатель компонентов
+     * @param  {Client} client Экземпляр Client
+     * @param  {BaseInteraction} interaction Поставляемый объект интеракции
+     * @returns {boolean}
+     */
+    async componentListener(client, interaction) {
         // do nothing
         return false;
     }
 
-    setupTimeouts(client) {
+    /**
+     * Слушатель AutoComlete
+     * @param  {Client} client Экземпляр Client
+     * @param  {AutocompleteInteraction} interaction Поставляемый объект интеракции
+     */
+    async autocomplete(client, interaction) {
+        // do nothing
+    }
+
+    /**
+     * Предустановка таймаутов
+     * @param  {Client} client Экземпляр Client
+     * @returns {boolean}
+     */
+    async setupTimeouts(client) {
         // do nothing
         return false;
     }

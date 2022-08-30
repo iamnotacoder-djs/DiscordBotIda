@@ -13,19 +13,20 @@ module.exports = {
         const cmd = client.commands.get(command);
 
         if (cmd && cmd.type.includes(Config.CommandType.CHAT)) {
-            try {
-                cmd.exec(client, message);
-            } catch (err) {
-                message.reply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setDescription(`Ошибка выполнения команды ${command}`)
-                            .setColor(Config.embed_color)
-                    ],
-                    ephemeral: true
+            // Вызываем
+            cmd.exec(client, message)
+                .catch((e) => {
+                    // Сообщаем об ошибке
+                    Log.error(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${cmd.name}: ${e}`);
+                    interaction.reply({
+                        embeds: [
+                            new EmbedBuilder()                                
+                                .setDescription(`Ошибка выполнения команды ${cmd.name}: ${e}`)
+                                .setColor(Config.embed_color)
+                        ],
+                        ephemeral: true
+                    });
                 });
-                Log.send(`[EVENT/MESSAGECREATE] Ошибка выполнения команды ${command}: ${err}`);
-            }
         }
     }
 }
