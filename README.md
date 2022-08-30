@@ -15,7 +15,7 @@
 
 ## Установка
 - Загрузить репозиторий `git clone https://github.com/idaspin/DiscordBotIda_boosty.git`
-- В папке проекта инициализировать node-проект и загрузить модули `npm init`, `npm i discord.js@14.1.2 fs quick.db@9.0.6 better-sqlite3`
+- В папке проекта инициализировать node-проект и загрузить модули `npm init`, `npm i discord.js@14.1.2 fs dotenv quick.db@9.0.6 better-sqlite3`
 - В *config.json* заменить идентификаторы: `controller_guild_id` - сервера для логов (в данный момент не используется), `controller_logs_id` - канала для логов.
 - Запустить с помощью `node .`
 
