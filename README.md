@@ -10,7 +10,7 @@
 [RoomCreator](https://github.com/idaspin/DiscordBotRoomCreator)
 
 #### Технические требования / ограничения:
-[Discord.js@14.1.2](https://www.npmjs.com/package/discord.js/v/14.1.2)<br>
+[Discord.js@14.3.0](https://www.npmjs.com/package/discord.js/v/14.3.0)<br>
 [quick.db@9.0.6](https://www.npmjs.com/package/quick.db/v/9.0.6)
 
 ## Установка
@@ -20,7 +20,7 @@
 - Запустить с помощью `node .`
 
 ## Присоединяйся к сообществу
-Есть вопросы по боту или программированию в целом? Залетай в **Хаб Не ITшников**: Сообщество разработчиков, программистов и просто людей увлекающихся кодингом.
+Есть вопросы по боту или программированию в целом? Залетай в **Хаб Не ITшников**: Сообщество разработчиков, программистов и просто людей увлекающихся кодингом.<br>
 [Discord сервер](https://discord.gg/YeqrTtpmaH)<br>
 [Вконтакте](https://vk.com/iamnotacoderdjs)<br>
 [Телеграм](https://t.me/iamnotacoderdjs)
