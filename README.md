@@ -7,7 +7,8 @@
 - Запустить.
 ##### Примеры использования:
 [Franky](https://github.com/idaspin/DiscordBotFranky)<br>
-[RoomCreator](https://github.com/idaspin/DiscordBotRoomCreator)
+[RoomCreator](https://github.com/idaspin/DiscordBotRoomCreator)<br>
+[BotAvatar](https://github.com/idaspin/DiscordBotAvatar)
 
 #### Технические требования / ограничения:
 [Discord.js@14.3.0](https://www.npmjs.com/package/discord.js/v/14.3.0)<br>
