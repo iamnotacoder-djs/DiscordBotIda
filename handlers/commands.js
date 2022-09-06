@@ -18,7 +18,8 @@ module.exports.init = async (client) => {
 async function walk(client, dir, slashes = []) {
     if (Array.isArray(dir)) return slashes;
     if ( !(await lstat(dir)).isDirectory() ) {
-		const cmd = new require(`../${dir}`);
+		const cmdClass = require(`../${dir}`);
+		const cmd = new cmdClass();
 		if (cmd instanceof BaseCommand) {
 			client.commands.set(cmd.name, cmd);
 			if (cmd.type.includes(Config.CommandType.SLASH_APPLICATION)) 
