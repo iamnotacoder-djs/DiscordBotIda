@@ -7,7 +7,6 @@ class ConfigUtil {
 
 	constructor() {
 		this.config = require("../config.json");
-		this.config.Strings = require("../strings.json");
 		this.config.CommandType = this.CommandType;
 		this.config.Locales = this.Locales;
 		return this.config;
